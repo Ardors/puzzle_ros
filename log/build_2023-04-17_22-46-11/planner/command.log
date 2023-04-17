@@ -1,0 +1,6 @@
+Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/planner -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/planner
+Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/planner -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/planner
+Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/planner -- -j12 -l12
+Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/planner -- -j12 -l12
+Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/planner
+Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/planner

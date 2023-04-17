@@ -1,0 +1,16 @@
+/home/miripablo/puzzle_ros/install/vision/lib/vision/vision
+/home/miripablo/puzzle_ros/install/vision/share/ament_index/resource_index/package_run_dependencies/vision
+/home/miripablo/puzzle_ros/install/vision/share/ament_index/resource_index/parent_prefix_path/vision
+/home/miripablo/puzzle_ros/install/vision/share/vision/environment/ament_prefix_path.sh
+/home/miripablo/puzzle_ros/install/vision/share/vision/environment/ament_prefix_path.dsv
+/home/miripablo/puzzle_ros/install/vision/share/vision/environment/path.sh
+/home/miripablo/puzzle_ros/install/vision/share/vision/environment/path.dsv
+/home/miripablo/puzzle_ros/install/vision/share/vision/local_setup.bash
+/home/miripablo/puzzle_ros/install/vision/share/vision/local_setup.sh
+/home/miripablo/puzzle_ros/install/vision/share/vision/local_setup.zsh
+/home/miripablo/puzzle_ros/install/vision/share/vision/local_setup.dsv
+/home/miripablo/puzzle_ros/install/vision/share/vision/package.dsv
+/home/miripablo/puzzle_ros/install/vision/share/ament_index/resource_index/packages/vision
+/home/miripablo/puzzle_ros/install/vision/share/vision/cmake/visionConfig.cmake
+/home/miripablo/puzzle_ros/install/vision/share/vision/cmake/visionConfig-version.cmake
+/home/miripablo/puzzle_ros/install/vision/share/vision/package.xml

@@ -1,0 +1,16 @@
+/home/miripablo/puzzle_ros/install/planner/lib/planner/planner
+/home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/package_run_dependencies/planner
+/home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/parent_prefix_path/planner
+/home/miripablo/puzzle_ros/install/planner/share/planner/environment/ament_prefix_path.sh
+/home/miripablo/puzzle_ros/install/planner/share/planner/environment/ament_prefix_path.dsv
+/home/miripablo/puzzle_ros/install/planner/share/planner/environment/path.sh
+/home/miripablo/puzzle_ros/install/planner/share/planner/environment/path.dsv
+/home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.bash
+/home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.sh
+/home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.zsh
+/home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.dsv
+/home/miripablo/puzzle_ros/install/planner/share/planner/package.dsv
+/home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/packages/planner
+/home/miripablo/puzzle_ros/install/planner/share/planner/cmake/plannerConfig.cmake
+/home/miripablo/puzzle_ros/install/planner/share/planner/cmake/plannerConfig-version.cmake
+/home/miripablo/puzzle_ros/install/planner/share/planner/package.xml

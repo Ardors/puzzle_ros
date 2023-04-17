@@ -1,0 +1,51 @@
+[0.010s] Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/planner -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/planner
+[0.139s] -- The C compiler identification is GNU 11.3.0
+[0.252s] -- The CXX compiler identification is GNU 11.3.0
+[0.270s] -- Detecting C compiler ABI info
+[0.308s] -- Detecting C compiler ABI info - done
+[0.313s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.313s] -- Detecting C compile features
+[0.314s] -- Detecting C compile features - done
+[0.319s] -- Detecting CXX compiler ABI info
+[0.361s] -- Detecting CXX compiler ABI info - done
+[0.369s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.369s] -- Detecting CXX compile features
+[0.370s] -- Detecting CXX compile features - done
+[0.372s] -- Found ament_cmake: 1.3.3 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.473s] -- Found Python3: /usr/bin/python3.10 (found version "3.10.6") found components: Interpreter 
+[0.538s] -- Found ament_lint_auto: 0.12.5 (/opt/ros/humble/share/ament_lint_auto/cmake)
+[0.601s] -- Added test 'cppcheck' to perform static code analysis on C / C++ code
+[0.601s] -- Configured cppcheck include dirs: $<BUILD_INTERFACE:/home/miripablo/puzzle_ros/src/planner/include>
+[0.601s] -- Configured cppcheck exclude dirs and/or files: 
+[0.602s] -- Added test 'lint_cmake' to check CMake code style
+[0.604s] -- Added test 'uncrustify' to check C / C++ code style
+[0.604s] -- Configured uncrustify additional arguments: 
+[0.604s] -- Added test 'xmllint' to check XML markup files
+[0.605s] -- Configuring done
+[0.608s] -- Generating done
+[0.608s] -- Build files have been written to: /home/miripablo/puzzle_ros/build/planner
+[0.614s] Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/planner -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/planner
+[0.615s] Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/planner -- -j12 -l12
+[0.634s] [ 50%] [32mBuilding CXX object CMakeFiles/planner.dir/src/planner.cpp.o[0m
+[0.665s] [100%] [32m[1mLinking CXX executable planner[0m
+[0.687s] [100%] Built target planner
+[0.692s] Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/planner -- -j12 -l12
+[0.705s] Invoking command in '/home/miripablo/puzzle_ros/build/planner': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/planner
+[0.709s] -- Install configuration: ""
+[0.709s] -- Installing: /home/miripablo/puzzle_ros/install/planner/lib/planner/planner
+[0.709s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/package_run_dependencies/planner
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/parent_prefix_path/planner
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/environment/ament_prefix_path.sh
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/environment/ament_prefix_path.dsv
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/environment/path.sh
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/environment/path.dsv
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.bash
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.sh
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.zsh
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/local_setup.dsv
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/package.dsv
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/ament_index/resource_index/packages/planner
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/cmake/plannerConfig.cmake
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/cmake/plannerConfig-version.cmake
+[0.710s] -- Installing: /home/miripablo/puzzle_ros/install/planner/share/planner/package.xml
+[0.720s] Invoked command in '/home/miripablo/puzzle_ros/build/planner' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/planner

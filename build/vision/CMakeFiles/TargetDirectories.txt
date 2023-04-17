@@ -1,0 +1,10 @@
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/uninstall.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/vision_uninstall.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/vision.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/test.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/edit_cache.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/rebuild_cache.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/list_install_components.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/install.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/install/local.dir
+/home/miripablo/puzzle_ros/build/vision/CMakeFiles/install/strip.dir
