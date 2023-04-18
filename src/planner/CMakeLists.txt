@@ -7,14 +7,30 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-# uncomment the following section in order to fill in
-# further dependencies manually.
-# find_package(<dependency> REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_lifecycle REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(std_msgs REQUIRED)
+find_package(interfaces REQUIRED)
 
-add_executable(planner src/planner.cpp)
-target_include_directories(planner PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include>)
+include_directories(
+  include
+)
+ament_export_include_directories(include)
+
+set(dependencies
+  rclcpp
+  rclcpp_lifecycle
+  rclcpp_action
+  std_msgs 
+  interfaces
+)
+
+add_executable(${PROJECT_NAME} src/planner.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC ${Boost_INCLUDE_DIRS})
+target_link_libraries(${PROJECT_NAME} ${Boost_PROGRAM_OPTIONS_LIBRARY})
+ament_target_dependencies(${PROJECT_NAME} ${dependencies})
+
 target_compile_features(planner PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 
 install(TARGETS planner
