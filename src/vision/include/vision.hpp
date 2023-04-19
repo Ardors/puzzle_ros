@@ -14,6 +14,7 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #include "interfaces/srv/identify_piece.hpp"
+#include "interfaces/srv/locate_pieces.hpp"
 
 using LifecycleCallbackReturn =
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
@@ -29,9 +30,16 @@ class Vision : public rclcpp_lifecycle::LifecycleNode {
       const std::string& ip, const std::string& mac, int error_clear_trials,
       const int & errorsPeriod);
 
+  // Publishers and its corresponding timers
+  std::shared_ptr<rclcpp::TimerBase> timer_publish_image_;
+  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> publisher_publish_image_;
+
   // Services and its corresponding callbackGroups
-  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_piece_;
-  std::shared_ptr<rclcpp::Service<interfaces::srv::IdentifyPiece>> vision_service_piece_;
+  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_identify_piece_;
+  std::shared_ptr<rclcpp::Service<interfaces::srv::IdentifyPiece>> service_identify_piece_;
+
+  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_locate_pieces_;
+  std::shared_ptr<rclcpp::Service<interfaces::srv::LocatePieces>> service_locate_pieces_;
 
  private:
 
@@ -42,10 +50,13 @@ class Vision : public rclcpp_lifecycle::LifecycleNode {
   LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
   LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
+  void publishImage();
+
   void identifyPieceServiceCallback(const std::shared_ptr<interfaces::srv::IdentifyPiece::Request> request,
       std::shared_ptr<interfaces::srv::IdentifyPiece::Response> response);
 
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
+  void locatePiecesServiceCallback(const std::shared_ptr<interfaces::srv::LocatePieces::Request> request,
+      std::shared_ptr<interfaces::srv::LocatePieces::Response> response);
 };
 
 #endif  // VISION_HPP_

@@ -1,6 +1,0 @@
-Invoking command in '/home/miripablo/puzzle_ros/build/gui': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/gui -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/gui
-Invoked command in '/home/miripablo/puzzle_ros/build/gui' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/gui -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/gui
-Invoking command in '/home/miripablo/puzzle_ros/build/gui': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/gui -- -j12 -l12
-Invoked command in '/home/miripablo/puzzle_ros/build/gui' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/gui -- -j12 -l12
-Invoking command in '/home/miripablo/puzzle_ros/build/gui': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/gui
-Invoked command in '/home/miripablo/puzzle_ros/build/gui' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/gui

@@ -14,15 +14,30 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_configure(const rclcpp_lifecycle::State &)
   {
+    // Timer to run PublishImage publisher
+    publisher_publish_image_ = this->create_publisher<std_msgs::msg::String>("vision/publish_image", 10);
+    timer_publish_image_ = this->create_wall_timer(
+      1s, std::bind(&Vision::publishImage, this));
+      
     // CallbackGroup to run IdentifyPiece service in a separated thread
-    callback_group_service_piece_ = this->create_callback_group(
+    callback_group_service_identify_piece_ = this->create_callback_group(
         rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
 
-    vision_service_piece_ = this->create_service<interfaces::srv::IdentifyPiece>("vision/identify_piece",
+    service_identify_piece_ = this->create_service<interfaces::srv::IdentifyPiece>("vision/identify_piece",
         std::bind(&Vision::identifyPieceServiceCallback, this,
         std::placeholders::_1, std::placeholders::_2),
-        rmw_qos_profile_services_default, callback_group_service_piece_);
+        rmw_qos_profile_services_default, callback_group_service_identify_piece_);
     RCLCPP_INFO(this->get_logger(), "Service IdentifyPiece created.");
+
+    // CallbackGroup to run LocatePieces service in a separated thread
+    callback_group_service_locate_pieces_ = this->create_callback_group(
+        rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
+
+    service_locate_pieces_ = this->create_service<interfaces::srv::LocatePieces>("vision/locate_pieces",
+        std::bind(&Vision::locatePiecesServiceCallback, this,
+        std::placeholders::_1, std::placeholders::_2),
+        rmw_qos_profile_services_default, callback_group_service_locate_pieces_);
+    RCLCPP_INFO(this->get_logger(), "Service LocatePieces created.");
 
     RCLCPP_INFO(get_logger(), "on_configure() is called.");
 
@@ -32,6 +47,8 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_activate(const rclcpp_lifecycle::State &)
   {
+    publisher_publish_image_->on_activate();
+
     RCLCPP_INFO(get_logger(), "on_activate() is called.");
 
     std::this_thread::sleep_for(2s);
@@ -79,6 +96,32 @@ Vision::~Vision() {}
 
       response->piece.piece_id = 2;
       response->piece.piece_orientation = 1;
+  }
+
+  void Vision::locatePiecesServiceCallback(const std::shared_ptr<interfaces::srv::LocatePieces::Request> request,
+      std::shared_ptr<interfaces::srv::LocatePieces::Response> response){
+
+      interfaces::msg::PiecePose temp;
+
+      response->size = 2;
+
+      temp.piece_x = 0.02;
+      temp.piece_y = 0.3;
+      temp.piece_w = 1.2;
+      response->poses.push_back(temp);
+
+      temp.piece_x = 0.04;
+      temp.piece_y = 0.5;
+      temp.piece_w = 1.3;
+      response->poses.push_back(temp);
+  }
+
+  void Vision::publishImage()
+  {
+    auto msg = std::make_unique<std_msgs::msg::String>();
+    msg->data = "Image";
+
+    publisher_publish_image_->publish(std::move(msg));
   }
 
 /**

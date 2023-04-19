@@ -1,6 +1,0 @@
-Invoking command in '/home/miripablo/puzzle_ros/build/vision': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/vision -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/vision
-Invoked command in '/home/miripablo/puzzle_ros/build/vision' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake /home/miripablo/puzzle_ros/src/vision -DCMAKE_INSTALL_PREFIX=/home/miripablo/puzzle_ros/install/vision
-Invoking command in '/home/miripablo/puzzle_ros/build/vision': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/vision -- -j12 -l12
-Invoked command in '/home/miripablo/puzzle_ros/build/vision' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --build /home/miripablo/puzzle_ros/build/vision -- -j12 -l12
-Invoking command in '/home/miripablo/puzzle_ros/build/vision': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/vision
-Invoked command in '/home/miripablo/puzzle_ros/build/vision' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble /usr/bin/cmake --install /home/miripablo/puzzle_ros/build/vision

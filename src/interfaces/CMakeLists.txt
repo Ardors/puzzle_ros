@@ -22,7 +22,9 @@ find_package(rosidl_default_generators REQUIRED)
 
 rosidl_generate_interfaces(${PROJECT_NAME}
   "msg/Piece.msg"
+  "msg/PiecePose.msg"
   "srv/IdentifyPiece.srv"
+  "srv/LocatePieces.srv"
   DEPENDENCIES geometry_msgs
 )
 
