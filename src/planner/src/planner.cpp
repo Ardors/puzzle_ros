@@ -17,7 +17,7 @@ Planner::~Planner() {}
     // Create each client with its corresponding callbackGroup
     callback_group_client_piece_ = this->create_callback_group(
         rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
-    planner_client_piece_ = this->create_client<interfaces::srv::IdentifyPiece>("IdentifyPiece",
+    planner_client_piece_ = this->create_client<interfaces::srv::IdentifyPiece>("vision/identify_piece",
         rmw_qos_profile_services_default, callback_group_client_piece_);
 
     RCLCPP_INFO(get_logger(), "on_configure() is called.");
@@ -28,17 +28,15 @@ Planner::~Planner() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Planner::on_activate(const rclcpp_lifecycle::State &)
   {
-    // We explicitly activate the lifecycle publisher.
-    // Starting from this point, all messages are no longer
-    // ignored but sent into the network.
-    pub_->on_activate();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_activate() is called.");
+    RCLCPP_INFO(get_logger(), "on_activate() is called.");
 
     // Let's sleep for 2 seconds.
     // We emulate we are doing important
     // work in the activating phase.
     std::this_thread::sleep_for(2s);
+
+    requestIdentifyPiece();
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -46,12 +44,8 @@ Planner::~Planner() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Planner::on_deactivate(const rclcpp_lifecycle::State &)
   {
-    // We explicitly deactivate the lifecycle publisher.
-    // Starting from this point, all messages are no longer
-    // sent into the network.
-    pub_->on_deactivate();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
+    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -59,12 +53,8 @@ Planner::~Planner() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Planner::on_cleanup(const rclcpp_lifecycle::State &)
   {
-    // In our cleanup phase, we release the shared pointers to the
-    // timer and publisher. These entities are no longer available
-    // and our node is "clean".
-    pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.");
+    RCLCPP_INFO(get_logger(), "on cleanup is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -72,12 +62,8 @@ Planner::~Planner() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Planner::on_error(const rclcpp_lifecycle::State &)
   {
-    // In our cleanup phase, we release the shared pointers to the
-    // timer and publisher. These entities are no longer available
-    // and our node is "clean".
-    pub_.reset();
 
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on error is called.");
+    RCLCPP_INFO(get_logger(), "on error is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -85,10 +71,6 @@ Planner::~Planner() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Planner::on_shutdown(const rclcpp_lifecycle::State & state)
   {
-    // In our shutdown phase, we release the shared pointers to the
-    // timer and publisher. These entities are no longer available
-    // and our node is "clean".
-    pub_.reset();
 
     RCUTILS_LOG_INFO_NAMED(
       get_name(),
@@ -96,6 +78,27 @@ Planner::~Planner() {}
       state.label().c_str());
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+  }
+
+  void Planner::requestIdentifyPiece()
+  {
+    if (!planner_client_piece_->wait_for_service(std::chrono::seconds(1))) {
+      RCLCPP_ERROR(get_logger(), "vision/identify_piece not available after waiting");
+      return;
+    }
+
+    auto request = std::make_shared<interfaces::srv::IdentifyPiece::Request>();
+    auto future_result = planner_client_piece_->async_send_request(request);
+
+    if (future_result.wait_for(std::chrono::seconds(20)) != std::future_status::ready)
+    {
+      RCLCPP_ERROR(get_logger(), "vision/identify_piece no response");
+      return;
+    } else {
+      auto response_value = future_result.get();
+      RCLCPP_INFO(get_logger(), "IdentifyPiece: %d %d", response_value->piece.piece_id,response_value->piece.piece_orientation);
+    }
+
   }
 
 /**

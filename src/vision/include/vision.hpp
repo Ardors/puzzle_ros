@@ -1,12 +1,12 @@
 #ifndef VISION_HPP_
 #define VISION_HPP_
 
-#include <boost/optional.hpp>
 #include <string>
 #include <memory>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
+#include "sensor_msgs/msg/image.hpp"
 #include "std_msgs/msg/string.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
@@ -32,7 +32,7 @@ class Vision : public rclcpp_lifecycle::LifecycleNode {
 
   // Publishers and its corresponding timers
   std::shared_ptr<rclcpp::TimerBase> timer_publish_image_;
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> publisher_publish_image_;
+  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Image>> publisher_publish_image_;
 
   // Services and its corresponding callbackGroups
   rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_identify_piece_;

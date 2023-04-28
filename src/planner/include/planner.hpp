@@ -1,7 +1,6 @@
 #ifndef PLANNER_HPP_
 #define PLANNER_HPP_
 
-#include <boost/optional.hpp>
 #include <string>
 #include <memory>
 #include <vector>
@@ -42,6 +41,8 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
   LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
   LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
+  void requestLocatePieces();
+  void requestIdentifyPiece();
 
 private:
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;

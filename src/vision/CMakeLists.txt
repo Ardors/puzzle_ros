@@ -11,6 +11,7 @@ find_package(rclcpp REQUIRED)
 find_package(rclcpp_lifecycle REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
+find_package(sensor_msgs REQUIRED)
 find_package(interfaces REQUIRED)
 
 include_directories(
@@ -23,6 +24,7 @@ set(dependencies
   rclcpp_lifecycle
   rclcpp_action
   std_msgs
+  sensor_msgs
   interfaces
 )
 

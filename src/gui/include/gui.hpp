@@ -1,13 +1,13 @@
 #ifndef GUI_HPP_
 #define GUI_HPP_
 
-#include <boost/optional.hpp>
 #include <string>
 #include <memory>
 #include <vector>
 
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/string.hpp"
+#include "sensor_msgs/msg/image.hpp"
 #include "rclcpp_lifecycle/lifecycle_node.hpp"
 #include "lifecycle_msgs/msg/state.hpp"
 #include "lifecycle_msgs/msg/transition.hpp"
@@ -27,6 +27,10 @@ class Gui : public rclcpp_lifecycle::LifecycleNode {
       const std::string& ip, const std::string& mac, int error_clear_trials,
       const int & errorsPeriod);
 
+  // Subscribers and its corresponding callbackGroups
+  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_subscriber_publish_image_;
+  rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscriber_publish_image_;
+
  private:
 
   LifecycleCallbackReturn on_configure(const rclcpp_lifecycle::State &);
@@ -36,14 +40,8 @@ class Gui : public rclcpp_lifecycle::LifecycleNode {
   LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
   LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
+  void printImage(const sensor_msgs::msg::Image::SharedPtr image);
 
-private:
-  // We hold an instance of a lifecycle publisher. This lifecycle publisher
-  // can be activated or deactivated regarding on which state the lifecycle node
-  // is in.
-  // By default, a lifecycle publisher is inactive by creation and has to be
-  // activated to publish messages into the ROS world.
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
 };
 
 #endif  // GUI_HPP_

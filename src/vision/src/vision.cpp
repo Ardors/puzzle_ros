@@ -15,7 +15,7 @@ Vision::~Vision() {}
   Vision::on_configure(const rclcpp_lifecycle::State &)
   {
     // Timer to run PublishImage publisher
-    publisher_publish_image_ = this->create_publisher<std_msgs::msg::String>("vision/publish_image", 10);
+    publisher_publish_image_ = this->create_publisher<sensor_msgs::msg::Image>("vision/publish_image", 10);
     timer_publish_image_ = this->create_wall_timer(
       1s, std::bind(&Vision::publishImage, this));
       
@@ -27,7 +27,7 @@ Vision::~Vision() {}
         std::bind(&Vision::identifyPieceServiceCallback, this,
         std::placeholders::_1, std::placeholders::_2),
         rmw_qos_profile_services_default, callback_group_service_identify_piece_);
-    RCLCPP_INFO(this->get_logger(), "Service IdentifyPiece created.");
+    RCLCPP_INFO(get_logger(), "Service IdentifyPiece created.");
 
     // CallbackGroup to run LocatePieces service in a separated thread
     callback_group_service_locate_pieces_ = this->create_callback_group(
@@ -37,7 +37,7 @@ Vision::~Vision() {}
         std::bind(&Vision::locatePiecesServiceCallback, this,
         std::placeholders::_1, std::placeholders::_2),
         rmw_qos_profile_services_default, callback_group_service_locate_pieces_);
-    RCLCPP_INFO(this->get_logger(), "Service LocatePieces created.");
+    RCLCPP_INFO(get_logger(), "Service LocatePieces created.");
 
     RCLCPP_INFO(get_logger(), "on_configure() is called.");
 
@@ -59,7 +59,7 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_deactivate(const rclcpp_lifecycle::State &)
   {
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on_deactivate() is called.");
+    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -67,7 +67,7 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_cleanup(const rclcpp_lifecycle::State &)
   {
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on cleanup is called.");
+    RCLCPP_INFO(get_logger(), "on cleanup is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -75,7 +75,7 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_error(const rclcpp_lifecycle::State &)
   {
-    RCUTILS_LOG_INFO_NAMED(get_name(), "on error is called.");
+    RCLCPP_INFO(get_logger(), "on error is called.");
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
@@ -83,16 +83,15 @@ Vision::~Vision() {}
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
   Vision::on_shutdown(const rclcpp_lifecycle::State & state)
   {
-    RCUTILS_LOG_INFO_NAMED(
-      get_name(),
-      "on shutdown is called from state %s.",
-      state.label().c_str());
+    RCLCPP_INFO(get_logger(), "on shutdown is called from state %s.", state.label().c_str());
 
     return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
   }
 
   void Vision::identifyPieceServiceCallback(const std::shared_ptr<interfaces::srv::IdentifyPiece::Request> request,
       std::shared_ptr<interfaces::srv::IdentifyPiece::Response> response){
+      
+      RCLCPP_INFO(get_logger(), "IdentifyPiece service called");
 
       response->piece.piece_id = 2;
       response->piece.piece_orientation = 1;
@@ -100,6 +99,8 @@ Vision::~Vision() {}
 
   void Vision::locatePiecesServiceCallback(const std::shared_ptr<interfaces::srv::LocatePieces::Request> request,
       std::shared_ptr<interfaces::srv::LocatePieces::Response> response){
+      
+      RCLCPP_INFO(get_logger(), "LocatePieces service called");
 
       interfaces::msg::PiecePose temp;
 
@@ -118,10 +119,28 @@ Vision::~Vision() {}
 
   void Vision::publishImage()
   {
-    auto msg = std::make_unique<std_msgs::msg::String>();
-    msg->data = "Image";
+    sensor_msgs::msg::Image image;
+    char data[] = {0,0,0,0,0,0,255,0,0,0,0,0};
+    image.height = 2;
+    image.width = 2;
+    image.encoding = "brg8";
+    image.is_bigendian = false;
+    image.step = 3*2;
+    image.data.push_back(0);
+    image.data.push_back(255);
+    image.data.push_back(0);
+    image.data.push_back(0);
+    image.data.push_back(0);
+    image.data.push_back(0);
 
-    publisher_publish_image_->publish(std::move(msg));
+    image.data.push_back(0);
+    image.data.push_back(0);
+    image.data.push_back(0);
+    image.data.push_back(0);
+    image.data.push_back(255);
+    image.data.push_back(0);
+
+    publisher_publish_image_->publish(std::move(image));
   }
 
 /**
