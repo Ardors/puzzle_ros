@@ -28,7 +28,7 @@ class Gui : public rclcpp_lifecycle::LifecycleNode {
       const int & errorsPeriod);
 
   // Subscribers and its corresponding callbackGroups
-  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_subscriber_publish_image_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_subscriber_publish_image_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscriber_publish_image_;
 
  private:

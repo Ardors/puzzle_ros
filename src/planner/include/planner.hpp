@@ -29,7 +29,7 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
       const int & errorsPeriod);
 
   // Clients and its corresponding callbackGroups
-  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_client_piece_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_client_piece_;
   std::shared_ptr<rclcpp::Client<interfaces::srv::IdentifyPiece>> planner_client_piece_;
 
  private:

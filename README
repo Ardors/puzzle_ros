@@ -1,0 +1,12 @@
+# To source the project:
+
+source /opt/ros/humble/setup.bash
+source install/setup.bash
+
+# To change lifecycle state:
+
+ros2 lifecycle set planner configure
+
+# To call a service:
+
+ros2 service call <service_name> <service_type> <arguments>

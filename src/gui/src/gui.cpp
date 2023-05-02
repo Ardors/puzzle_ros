@@ -18,7 +18,7 @@ Gui::~Gui() {}
 
     // CallbackGroup to run PublishImage subscriber in a separated thread
     callback_group_subscriber_publish_image_ = this->create_callback_group(
-        rclcpp::callback_group::CallbackGroupType::MutuallyExclusive); 
+        rclcpp::CallbackGroupType::MutuallyExclusive); 
     auto sub_opt = rclcpp::SubscriptionOptions();
     sub_opt.callback_group = callback_group_subscriber_publish_image_;
 

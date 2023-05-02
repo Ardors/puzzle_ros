@@ -16,7 +16,7 @@ Planner::~Planner() {}
   {
     // Create each client with its corresponding callbackGroup
     callback_group_client_piece_ = this->create_callback_group(
-        rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
+        rclcpp::CallbackGroupType::MutuallyExclusive);
     planner_client_piece_ = this->create_client<interfaces::srv::IdentifyPiece>("vision/identify_piece",
         rmw_qos_profile_services_default, callback_group_client_piece_);
 
@@ -90,7 +90,7 @@ Planner::~Planner() {}
     auto request = std::make_shared<interfaces::srv::IdentifyPiece::Request>();
     auto future_result = planner_client_piece_->async_send_request(request);
 
-    if (future_result.wait_for(std::chrono::seconds(20)) != std::future_status::ready)
+    if (future_result.wait_for(std::chrono::seconds(10)) != std::future_status::ready)
     {
       RCLCPP_ERROR(get_logger(), "vision/identify_piece no response");
       return;

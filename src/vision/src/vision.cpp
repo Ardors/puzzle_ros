@@ -21,7 +21,7 @@ Vision::~Vision() {}
       
     // CallbackGroup to run IdentifyPiece service in a separated thread
     callback_group_service_identify_piece_ = this->create_callback_group(
-        rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
+        rclcpp::CallbackGroupType::MutuallyExclusive);
 
     service_identify_piece_ = this->create_service<interfaces::srv::IdentifyPiece>("vision/identify_piece",
         std::bind(&Vision::identifyPieceServiceCallback, this,
@@ -31,7 +31,7 @@ Vision::~Vision() {}
 
     // CallbackGroup to run LocatePieces service in a separated thread
     callback_group_service_locate_pieces_ = this->create_callback_group(
-        rclcpp::callback_group::CallbackGroupType::MutuallyExclusive);
+        rclcpp::CallbackGroupType::MutuallyExclusive);
 
     service_locate_pieces_ = this->create_service<interfaces::srv::LocatePieces>("vision/locate_pieces",
         std::bind(&Vision::locatePiecesServiceCallback, this,
@@ -120,7 +120,7 @@ Vision::~Vision() {}
   void Vision::publishImage()
   {
     sensor_msgs::msg::Image image;
-    char data[] = {0,0,0,0,0,0,255,0,0,0,0,0};
+    char data[] = {0,0,0,0,0,0,'f',0,0,0,0,0};
     image.height = 2;
     image.width = 2;
     image.encoding = "brg8";

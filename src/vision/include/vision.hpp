@@ -35,10 +35,10 @@ class Vision : public rclcpp_lifecycle::LifecycleNode {
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Image>> publisher_publish_image_;
 
   // Services and its corresponding callbackGroups
-  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_identify_piece_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_service_identify_piece_;
   std::shared_ptr<rclcpp::Service<interfaces::srv::IdentifyPiece>> service_identify_piece_;
 
-  rclcpp::callback_group::CallbackGroup::SharedPtr callback_group_service_locate_pieces_;
+  rclcpp::CallbackGroup::SharedPtr callback_group_service_locate_pieces_;
   std::shared_ptr<rclcpp::Service<interfaces::srv::LocatePieces>> service_locate_pieces_;
 
  private:
