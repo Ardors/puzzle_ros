@@ -10,3 +10,7 @@ ros2 lifecycle set planner configure
 # To call a service:
 
 ros2 service call <service_name> <service_type> <arguments>
+
+# To call an action:
+
+ros2 action send_goal /planner/solve_puzzle interfaces/action/SolvePuzzle "{}"

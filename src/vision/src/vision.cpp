@@ -104,8 +104,6 @@ Vision::~Vision() {}
 
       interfaces::msg::PiecePose temp;
 
-      response->size = 2;
-
       temp.piece_x = 0.02;
       temp.piece_y = 0.3;
       temp.piece_w = 1.2;
@@ -120,7 +118,6 @@ Vision::~Vision() {}
   void Vision::publishImage()
   {
     sensor_msgs::msg::Image image;
-    char data[] = {0,0,0,0,0,0,'f',0,0,0,0,0};
     image.height = 2;
     image.width = 2;
     image.encoding = "brg8";
@@ -157,7 +154,7 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
-  rclcpp::executors::SingleThreadedExecutor exe;
+  rclcpp::executors::MultiThreadedExecutor exe;
 
   std::shared_ptr<Vision> lc_node =
     std::make_shared<Vision>("vision");

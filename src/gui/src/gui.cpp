@@ -87,7 +87,7 @@ Gui::~Gui() {}
   }
 
   void Gui::printImage(const sensor_msgs::msg::Image::SharedPtr image){
-    RCLCPP_INFO(get_logger(), "%d %d %d %d %d %d\n%d %d %d %d %d %d",
+    RCLCPP_INFO(get_logger(), "Image:\n%d %d %d %d %d %d\n%d %d %d %d %d %d",
     image->data[0], image->data[1], image->data[2], image->data[3], image->data[4], image->data[5],
     image->data[6], image->data[7], image->data[8], image->data[9], image->data[10], image->data[11]);
   }
@@ -106,7 +106,7 @@ int main(int argc, char * argv[])
 
   rclcpp::init(argc, argv);
 
-  rclcpp::executors::SingleThreadedExecutor exe;
+  rclcpp::executors::MultiThreadedExecutor exe;
 
   std::shared_ptr<Gui> lc_node =
     std::make_shared<Gui>("gui");

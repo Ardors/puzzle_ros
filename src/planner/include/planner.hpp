@@ -13,9 +13,12 @@
 #include "rclcpp_action/rclcpp_action.hpp"
 
 #include "interfaces/srv/identify_piece.hpp"
+#include "interfaces/srv/locate_pieces.hpp"
+#include "interfaces/action/solve_puzzle.hpp"
 
 using LifecycleCallbackReturn =
   rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+using SolvePuzzle = interfaces::action::SolvePuzzle;
 
 class Planner : public rclcpp_lifecycle::LifecycleNode {
  public:
@@ -28,9 +31,17 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
       const std::string& ip, const std::string& mac, int error_clear_trials,
       const int & errorsPeriod);
 
-  // Clients and its corresponding callbackGroups
-  rclcpp::CallbackGroup::SharedPtr callback_group_client_piece_;
-  std::shared_ptr<rclcpp::Client<interfaces::srv::IdentifyPiece>> planner_client_piece_;
+  // IdentifyPiece client and its callback
+  rclcpp::CallbackGroup::SharedPtr callback_group_client_identify_piece_;
+  std::shared_ptr<rclcpp::Client<interfaces::srv::IdentifyPiece>> client_identify_piece_;
+
+  // LocatePieces client and its callback
+  rclcpp::CallbackGroup::SharedPtr callback_group_client_locate_pieces_;
+  std::shared_ptr<rclcpp::Client<interfaces::srv::LocatePieces>> client_locate_pieces_;
+
+  // SolvePuzzle action and its callback
+  rclcpp::CallbackGroup::SharedPtr callback_group_action_solve_puzzle_;
+  rclcpp_action::Server<SolvePuzzle>::SharedPtr action_solve_puzzle_;
 
  private:
 
@@ -41,8 +52,19 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
   LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
   LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
-  void requestLocatePieces();
-  void requestIdentifyPiece();
+  bool requestLocatePieces();
+  bool requestIdentifyPiece();
+
+  // Function related to SolvePuzzle action
+  rclcpp_action::GoalResponse handleGoal(
+    const rclcpp_action::GoalUUID & uuid,
+    std::shared_ptr<const SolvePuzzle::Goal> goal);
+  rclcpp_action::CancelResponse handleCancel(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<SolvePuzzle>> goal_handle);
+  void solvePuzzleAccepted(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<SolvePuzzle>> goal_handle); 
+  void executeSolvePuzzle(
+    const std::shared_ptr<rclcpp_action::ServerGoalHandle<SolvePuzzle>> goal_handle);
 
 private:
   std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
