@@ -39,6 +39,10 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
   rclcpp::CallbackGroup::SharedPtr callback_group_client_locate_pieces_;
   std::shared_ptr<rclcpp::Client<interfaces::srv::LocatePieces>> client_locate_pieces_;
 
+  // SetIO client and its callback
+  rclcpp::CallbackGroup::SharedPtr callback_group_client_set_io_;
+  std::shared_ptr<rclcpp::Client<ur_msgs::srv::SetIO>> client_set_io_;
+
   // SolvePuzzle action and its callback
   rclcpp::CallbackGroup::SharedPtr callback_group_action_solve_puzzle_;
   rclcpp_action::Server<SolvePuzzle>::SharedPtr action_solve_puzzle_;
@@ -54,6 +58,8 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
 
   bool requestLocatePieces();
   bool requestIdentifyPiece();
+  bool requestSetIO(uint8_t pin, uint8_t state);
+  bool operateGripper(bool open);
 
   // Function related to SolvePuzzle action
   rclcpp_action::GoalResponse handleGoal(

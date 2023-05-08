@@ -23,9 +23,15 @@ Planner::~Planner() {}
         rmw_qos_profile_services_default, callback_group_client_identify_piece_);
 
     // Create LocatePieces client callback
+    callback_group_client_set_io_ = this->create_callback_group(
+        rclcpp::CallbackGroupType::MutuallyExclusive);
+    client_set_io_ = this->create_client<interfaces::srv::LocatePieces>("vision/locate_pieces",
+        rmw_qos_profile_services_default, callback_group_client_set_io_);
+
+    // Create SetIO client callback
     callback_group_client_locate_pieces_ = this->create_callback_group(
         rclcpp::CallbackGroupType::MutuallyExclusive);
-    client_locate_pieces_ = this->create_client<interfaces::srv::LocatePieces>("vision/locate_pieces",
+    client_locate_pieces_ = this->create_client<ur_msgs::srv::SetIO>("/io_and_status_controller/set_io",
         rmw_qos_profile_services_default, callback_group_client_locate_pieces_);
 
     // Create SolvePuzzle action callback
@@ -146,6 +152,47 @@ Planner::~Planner() {}
       }
       return true;
     }
+  }
+
+  bool requestSetIO(uint8_t pin, uint8_t state){
+    if (!client_set_io_->wait_for_service(std::chrono::seconds(1))) {
+      RCLCPP_ERROR(get_logger(), "/io_and_status_controller/set_io not available after waiting");
+      return false;
+    }
+
+    auto request = std::make_shared<ur_msgs::srv::SetIO::Request>();
+    request->fun = 1;
+    request->pin = pin;
+    request->state = state;
+    auto future_result = client_set_io_->async_send_request(request);
+
+    if (future_result.wait_for(std::chrono::seconds(10)) != std::future_status::ready)
+    {
+      RCLCPP_ERROR(get_logger(), "/io_and_status_controller/set_io no response");
+      return false;
+    } else {
+      if (future_result.get()->success) {
+        auto future_result_value = future_result.get();
+        return future_result_value->return_value;
+      } else {
+        RCLCPP_ERROR(get_logger(),"/io_and_status_controller/set_io return error");
+        return false;
+      }
+      return true;
+    }
+  }
+
+  bool Planner::operateGripper(bool open){
+    bool success = true;
+    if(open){
+      success &= requestSetIO(16, 0);
+      success &= requestSetIO(17, 1);
+    }
+    else{
+      success &= requestSetIO(17, 0);
+      success &= requestSetIO(16, 1);
+    }
+    return success;
   }
 
   rclcpp_action::GoalResponse Planner::handleGoal(
