@@ -12,6 +12,8 @@ find_package(rclcpp_lifecycle REQUIRED)
 find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(interfaces REQUIRED)
+find_package(ur_msgs REQUIRED)
+find_package(moveit_ros_planning_interface REQUIRED)
 
 include_directories(
   include
@@ -24,6 +26,8 @@ set(dependencies
   rclcpp_action
   std_msgs 
   interfaces
+  ur_msgs
+  moveit_ros_planning_interface
 )
 
 add_executable(${PROJECT_NAME} src/planner.cpp)

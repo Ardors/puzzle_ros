@@ -22,16 +22,16 @@ Planner::~Planner() {}
         rmw_qos_profile_services_default, callback_group_client_identify_piece_);
 
     // Create LocatePieces client callback
-    callback_group_client_set_io_ = this->create_callback_group(
-        rclcpp::CallbackGroupType::MutuallyExclusive);
-    client_set_io_ = this->create_client<interfaces::srv::LocatePieces>("vision/locate_pieces",
-        rmw_qos_profile_services_default, callback_group_client_set_io_);
-
-    // Create SetIO client callback
     callback_group_client_locate_pieces_ = this->create_callback_group(
         rclcpp::CallbackGroupType::MutuallyExclusive);
-    client_locate_pieces_ = this->create_client<ur_msgs::srv::SetIO>("/io_and_status_controller/set_io",
+    client_locate_pieces_ = this->create_client<interfaces::srv::LocatePieces>("vision/locate_pieces",
         rmw_qos_profile_services_default, callback_group_client_locate_pieces_);
+
+    // Create SetIO client callback
+    callback_group_client_set_io_ = this->create_callback_group(
+        rclcpp::CallbackGroupType::MutuallyExclusive);
+    client_set_io_ = this->create_client<ur_msgs::srv::SetIO>("/io_and_status_controller/set_io",
+        rmw_qos_profile_services_default, callback_group_client_set_io_);
 
     // Create SolvePuzzle action callback
     callback_group_action_solve_puzzle_ = this->create_callback_group(
@@ -100,7 +100,7 @@ Planner::~Planner() {}
     }
   }
 
-  bool requestSetIO(uint8_t pin, uint8_t state){
+  bool Planner::requestSetIO(uint8_t pin, uint8_t state){
     if (!client_set_io_->wait_for_service(std::chrono::seconds(1))) {
       RCLCPP_ERROR(get_logger(), "/io_and_status_controller/set_io not available after waiting");
       return false;
@@ -119,7 +119,7 @@ Planner::~Planner() {}
     } else {
       if (future_result.get()->success) {
         auto future_result_value = future_result.get();
-        return future_result_value->return_value;
+        return true;
       } else {
         RCLCPP_ERROR(get_logger(),"/io_and_status_controller/set_io return error");
         return false;
@@ -182,6 +182,34 @@ Planner::~Planner() {}
       return;
     }
 
+    operateGripper(true);
+    operateGripper(false);
+
+    // Set a target Pose
+    auto const target_pose = []{
+      geometry_msgs::msg::Pose msg;
+      msg.orientation.w = 1.0;
+      msg.position.x = -0.15;
+      msg.position.y = -0.3;
+      msg.position.z = -0.2;
+      return msg;
+    }();
+    move_group_interface->setPoseTarget(target_pose);
+
+    // Create a plan to that target pose
+    auto const [success, plan] = [&move_group_interface]{
+      moveit::planning_interface::MoveGroupInterface::Plan msg;
+      auto const ok = static_cast<bool>(move_group_interface->plan(msg));
+      return std::make_pair(ok, msg);
+    }();
+
+    // Execute the plan
+    if(success) {
+      move_group_interface->execute(plan);
+    } else {
+      RCLCPP_ERROR(this->get_logger(), "Planing failed!");
+    }
+
     result->success = true;
     goal_handle->succeed(result);
     RCLCPP_INFO(get_logger(), "SolvePuzzle action completed");
@@ -204,9 +232,12 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::MultiThreadedExecutor exe;
 
-  std::shared_ptr<Planner> node = std::make_shared<Planner>("planner");
+  std::shared_ptr<rclcpp_lifecycle::LifecycleNode> lc_node =
+    std::make_shared<Planner>("planner");
+  
+  // std::shared_ptr<rclcpp::Node> aux = lc_node;
 
-  exe.add_node(node->get_node_base_interface());
+  move_group_interface = new  MoveGroupInterface(lc_node,"ur_manipulator");
 
   // Init node
   if (!node->init()) {

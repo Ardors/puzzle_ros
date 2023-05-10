@@ -15,6 +15,13 @@
 #include "interfaces/srv/identify_piece.hpp"
 #include "interfaces/srv/locate_pieces.hpp"
 #include "interfaces/action/solve_puzzle.hpp"
+#include "ur_msgs/srv/set_io.hpp"
+
+#include <moveit/move_group_interface/move_group_interface.h>
+
+  // Create the MoveIt MoveGroup Interface
+using moveit::planning_interface::MoveGroupInterface;
+MoveGroupInterface* move_group_interface;
 
 
 using SolvePuzzle = interfaces::action::SolvePuzzle;
