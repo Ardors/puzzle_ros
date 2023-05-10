@@ -7,6 +7,10 @@ source install/setup.bash
 
 ros2 lifecycle set planner configure
 
+# To use launcher:
+
+ros2 launch src/puzzle_launch.py
+
 # To call a service:
 
 ros2 service call <service_name> <service_type> <arguments>

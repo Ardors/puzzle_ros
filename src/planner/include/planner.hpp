@@ -16,20 +16,16 @@
 #include "interfaces/srv/locate_pieces.hpp"
 #include "interfaces/action/solve_puzzle.hpp"
 
-using LifecycleCallbackReturn =
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
+
 using SolvePuzzle = interfaces::action::SolvePuzzle;
 
-class Planner : public rclcpp_lifecycle::LifecycleNode {
+class Planner : public rclcpp::Node {
  public:
   explicit Planner(const std::string& name);
   ~Planner();
 
   // Init node
   bool init();
-  bool setParams(unsigned int charger_node, int connect_4g_timeout,
-      const std::string& ip, const std::string& mac, int error_clear_trials,
-      const int & errorsPeriod);
 
   // IdentifyPiece client and its callback
   rclcpp::CallbackGroup::SharedPtr callback_group_client_identify_piece_;
@@ -48,14 +44,6 @@ class Planner : public rclcpp_lifecycle::LifecycleNode {
   rclcpp_action::Server<SolvePuzzle>::SharedPtr action_solve_puzzle_;
 
  private:
-
-  LifecycleCallbackReturn on_configure(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_activate(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_deactivate(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
-
   bool requestLocatePieces();
   bool requestIdentifyPiece();
   bool requestSetIO(uint8_t pin, uint8_t state);

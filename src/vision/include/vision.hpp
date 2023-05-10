@@ -16,23 +16,18 @@
 #include "interfaces/srv/identify_piece.hpp"
 #include "interfaces/srv/locate_pieces.hpp"
 
-using LifecycleCallbackReturn =
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn;
 
-class Vision : public rclcpp_lifecycle::LifecycleNode {
+class Vision : public rclcpp::Node {
  public:
   explicit Vision(const std::string& name);
   ~Vision();
 
   // Init node
   bool init();
-  bool setParams(unsigned int charger_node, int connect_4g_timeout,
-      const std::string& ip, const std::string& mac, int error_clear_trials,
-      const int & errorsPeriod);
 
   // Publishers and its corresponding timers
   std::shared_ptr<rclcpp::TimerBase> timer_publish_image_;
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<sensor_msgs::msg::Image>> publisher_publish_image_;
+  std::shared_ptr<rclcpp::Publisher<sensor_msgs::msg::Image>> publisher_publish_image_;
 
   // Services and its corresponding callbackGroups
   rclcpp::CallbackGroup::SharedPtr callback_group_service_identify_piece_;
@@ -42,13 +37,6 @@ class Vision : public rclcpp_lifecycle::LifecycleNode {
   std::shared_ptr<rclcpp::Service<interfaces::srv::LocatePieces>> service_locate_pieces_;
 
  private:
-
-  LifecycleCallbackReturn on_configure(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_activate(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_deactivate(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_cleanup(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_error(const rclcpp_lifecycle::State &);
-  LifecycleCallbackReturn on_shutdown(const rclcpp_lifecycle::State &);
 
   void publishImage();
 

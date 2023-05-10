@@ -2,7 +2,7 @@
 
 using namespace std::chrono_literals;
 
-Gui::Gui(const std::string &name) : LifecycleNode(name, "") {
+Gui::Gui(const std::string &name) : Node(name, "") {
     if (name.empty()) {
         throw std::invalid_argument("Empty node name");
     }
@@ -11,9 +11,7 @@ Gui::Gui(const std::string &name) : LifecycleNode(name, "") {
 
 Gui::~Gui() {}
 
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_configure(const rclcpp_lifecycle::State &)
+  bool Gui::init()
   {
 
     // CallbackGroup to run PublishImage subscriber in a separated thread
@@ -28,62 +26,9 @@ Gui::~Gui() {}
         this, std::placeholders::_1), sub_opt);
     RCLCPP_INFO(get_logger(), "Subscribed to topic vision/publish_image");
 
-    RCLCPP_INFO(get_logger(), "on_configure() is called.");
+    RCLCPP_INFO(get_logger(), "Node initialized.");
 
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_activate(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on_activate() is called.");
-
-    // Let's sleep for 2 seconds.
-    // We emulate we are doing important
-    // work in the activating phase.
-    std::this_thread::sleep_for(2s);
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_deactivate(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_cleanup(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on cleanup is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_error(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on error is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Gui::on_shutdown(const rclcpp_lifecycle::State & state)
-  {
-
-    RCUTILS_LOG_INFO_NAMED(
-      get_name(),
-      "on shutdown is called from state %s.",
-      state.label().c_str());
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+    return true;
   }
 
   void Gui::printImage(const sensor_msgs::msg::Image::SharedPtr image){
@@ -108,10 +53,16 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::MultiThreadedExecutor exe;
 
-  std::shared_ptr<Gui> lc_node =
-    std::make_shared<Gui>("gui");
+  std::shared_ptr<Gui> node = std::make_shared<Gui>("gui");
 
-  exe.add_node(lc_node->get_node_base_interface());
+  exe.add_node(node->get_node_base_interface());
+
+  // Init node
+  if (!node->init()) {
+    RCLCPP_ERROR(node->get_logger(), "Node initialization failed");
+    rclcpp::shutdown();
+    return 1;
+  }
 
   exe.spin();
 
