@@ -13,8 +13,7 @@ Planner::Planner(const std::string &name) : LifecycleNode(name, "") {
 
 Planner::~Planner() {}
 
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_configure(const rclcpp_lifecycle::State &)
+  bool Planner::init()
   {
     // Create IdentifyVision client callback
     callback_group_client_identify_piece_ = this->create_callback_group(
@@ -48,62 +47,9 @@ Planner::~Planner() {}
       options,
       callback_group_action_solve_puzzle_);
 
-    RCLCPP_INFO(get_logger(), "on_configure() is called.");
+    RCLCPP_INFO(get_logger(), "Node initialized.");
 
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_activate(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on_activate() is called.");
-
-    // Let's sleep for 2 seconds.
-    // We emulate we are doing important
-    // work in the activating phase.
-    std::this_thread::sleep_for(2s);
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_deactivate(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_cleanup(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on cleanup is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_error(const rclcpp_lifecycle::State &)
-  {
-
-    RCLCPP_INFO(get_logger(), "on error is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Planner::on_shutdown(const rclcpp_lifecycle::State & state)
-  {
-
-    RCUTILS_LOG_INFO_NAMED(
-      get_name(),
-      "on shutdown is called from state %s.",
-      state.label().c_str());
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+    return true;
   }
 
   bool Planner::requestIdentifyPiece()
@@ -293,7 +239,12 @@ int main(int argc, char * argv[])
 
   move_group_interface = new  MoveGroupInterface(lc_node,"ur_manipulator");
 
-  exe.add_node(lc_node->get_node_base_interface());
+  // Init node
+  if (!node->init()) {
+    RCLCPP_ERROR(node->get_logger(), "Node initialization failed");
+    rclcpp::shutdown();
+    return 1;
+  }
 
   exe.spin();
 

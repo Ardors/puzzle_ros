@@ -2,7 +2,7 @@
 
 using namespace std::chrono_literals;
 
-Vision::Vision(const std::string &name) : LifecycleNode(name, "") {
+Vision::Vision(const std::string &name) : Node(name, "") {
     if (name.empty()) {
         throw std::invalid_argument("Empty node name");
     }
@@ -11,8 +11,7 @@ Vision::Vision(const std::string &name) : LifecycleNode(name, "") {
 
 Vision::~Vision() {}
 
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_configure(const rclcpp_lifecycle::State &)
+  bool Vision::init()
   {
     // Timer to run PublishImage publisher
     publisher_publish_image_ = this->create_publisher<sensor_msgs::msg::Image>("vision/publish_image", 10);
@@ -39,53 +38,9 @@ Vision::~Vision() {}
         rmw_qos_profile_services_default, callback_group_service_locate_pieces_);
     RCLCPP_INFO(get_logger(), "Service LocatePieces created.");
 
-    RCLCPP_INFO(get_logger(), "on_configure() is called.");
+    RCLCPP_INFO(get_logger(), "Node initialized.");
 
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_activate(const rclcpp_lifecycle::State &)
-  {
-    publisher_publish_image_->on_activate();
-
-    RCLCPP_INFO(get_logger(), "on_activate() is called.");
-
-    std::this_thread::sleep_for(2s);
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_deactivate(const rclcpp_lifecycle::State &)
-  {
-    RCLCPP_INFO(get_logger(), "on_deactivate() is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_cleanup(const rclcpp_lifecycle::State &)
-  {
-    RCLCPP_INFO(get_logger(), "on cleanup is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_error(const rclcpp_lifecycle::State &)
-  {
-    RCLCPP_INFO(get_logger(), "on error is called.");
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
-  }
-
-  rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn
-  Vision::on_shutdown(const rclcpp_lifecycle::State & state)
-  {
-    RCLCPP_INFO(get_logger(), "on shutdown is called from state %s.", state.label().c_str());
-
-    return rclcpp_lifecycle::node_interfaces::LifecycleNodeInterface::CallbackReturn::SUCCESS;
+    return true;
   }
 
   void Vision::identifyPieceServiceCallback(const std::shared_ptr<interfaces::srv::IdentifyPiece::Request> request,
@@ -156,10 +111,16 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::MultiThreadedExecutor exe;
 
-  std::shared_ptr<Vision> lc_node =
-    std::make_shared<Vision>("vision");
+  std::shared_ptr<Vision> node = std::make_shared<Vision>("vision");
 
-  exe.add_node(lc_node->get_node_base_interface());
+  exe.add_node(node->get_node_base_interface());
+
+  // Init node
+  if (!node->init()) {
+    RCLCPP_ERROR(node->get_logger(), "Node initialization failed");
+    rclcpp::shutdown();
+    return 1;
+  }
 
   exe.spin();
 
