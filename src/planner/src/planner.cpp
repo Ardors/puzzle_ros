@@ -4,7 +4,7 @@ using namespace std::chrono_literals;
 
 using SolvePuzzle = interfaces::action::SolvePuzzle;
 
-Planner::Planner(const std::string &name) : LifecycleNode(name, "") {
+Planner::Planner(const std::string &name) : Node(name, "") {
     if (name.empty()) {
         throw std::invalid_argument("Empty node name");
     }
@@ -189,9 +189,9 @@ Planner::~Planner() {}
     auto const target_pose = []{
       geometry_msgs::msg::Pose msg;
       msg.orientation.w = 1.0;
-      msg.position.x = -0.15;
-      msg.position.y = -0.3;
-      msg.position.z = -0.2;
+      msg.position.x = 0;
+      msg.position.y = 0.3;
+      msg.position.z = 0.25;
       return msg;
     }();
     move_group_interface->setPoseTarget(target_pose);
@@ -232,12 +232,11 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::MultiThreadedExecutor exe;
 
-  std::shared_ptr<rclcpp_lifecycle::LifecycleNode> lc_node =
-    std::make_shared<Planner>("planner");
-  
-  // std::shared_ptr<rclcpp::Node> aux = lc_node;
+  std::shared_ptr<Planner> node = std::make_shared<Planner>("planner");
 
-  move_group_interface = new  MoveGroupInterface(lc_node,"ur_manipulator");
+  move_group_interface = new  MoveGroupInterface(node,"ur_manipulator");
+
+  exe.add_node(node->get_node_base_interface());
 
   // Init node
   if (!node->init()) {

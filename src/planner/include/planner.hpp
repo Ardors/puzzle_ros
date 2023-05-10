@@ -67,8 +67,6 @@ class Planner : public rclcpp::Node {
   void executeSolvePuzzle(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<SolvePuzzle>> goal_handle);
 
-private:
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
 };
 
 #endif  // PLANNER_HPP_
