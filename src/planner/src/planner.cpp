@@ -15,6 +15,11 @@ Planner::~Planner() {}
 
   bool Planner::init()
   {
+    publisher_joints_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>
+    ("/joint_trajectory_controller/joint_trajectory", 10);
+
+    RCLCPP_INFO(get_logger(), "Publisher joints created.");
+
     // Create IdentifyVision client callback
     callback_group_client_identify_piece_ = this->create_callback_group(
         rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -46,6 +51,8 @@ Planner::~Planner() {}
       std::bind(&Planner::solvePuzzleAccepted, this, std::placeholders::_1),
       options,
       callback_group_action_solve_puzzle_);
+
+
 
     RCLCPP_INFO(get_logger(), "Node initialized.");
 
@@ -141,6 +148,8 @@ Planner::~Planner() {}
     return success;
   }
 
+  bool Planner::giveJointGoal(float a, float b, float c, float d, float e, float f)
+
   rclcpp_action::GoalResponse Planner::handleGoal(
       const rclcpp_action::GoalUUID & uuid,
       std::shared_ptr<const SolvePuzzle::Goal> goal)
@@ -170,6 +179,7 @@ Planner::~Planner() {}
 
     auto result = std::make_shared<SolvePuzzle::Result>();
     
+    /*
     if(!requestIdentifyPiece()){
       result->success = false;
       goal_handle->succeed(result);
@@ -181,10 +191,42 @@ Planner::~Planner() {}
       goal_handle->succeed(result);
       return;
     }
+    */
 
     operateGripper(true);
     operateGripper(false);
 
+        trajectory_msgs::msg::JointTrajectory pose;
+
+    pose.joint_names.push_back("elbow_joint");
+    pose.joint_names.push_back("shoulder_lift_joint");
+    pose.joint_names.push_back("shoulder_pan_joint");
+    pose.joint_names.push_back("wrist_1_joint");
+    pose.joint_names.push_back("wrist_2_joint");
+    pose.joint_names.push_back("wrist_3_joint");
+
+    trajectory_msgs::msg::JointTrajectoryPoint punto;
+
+    punto.positions.push_back(-0.9);
+    punto.positions.push_back(-1.2);
+    punto.positions.push_back(-0.8);
+    punto.positions.push_back(5);
+    punto.positions.push_back(3.4);
+    punto.positions.push_back(-2.8);
+
+    punto.time_from_start.sec = 2;
+
+    pose.points.push_back(punto);
+
+
+    //while(publisher_joints_->getNumSubscribers() == 0);
+    
+    
+    publisher_joints_->publish(std::move(pose));
+
+       RCLCPP_INFO(get_logger(), "Published.");
+
+/*
     // Set a target Pose
     auto const target_pose = []{
       geometry_msgs::msg::Pose msg;
@@ -194,6 +236,7 @@ Planner::~Planner() {}
       msg.position.z = 0.25;
       return msg;
     }();
+
     move_group_interface->setPoseTarget(target_pose);
 
     // Create a plan to that target pose
@@ -213,6 +256,7 @@ Planner::~Planner() {}
     result->success = true;
     goal_handle->succeed(result);
     RCLCPP_INFO(get_logger(), "SolvePuzzle action completed");
+    */
     return;
   }
 
@@ -234,7 +278,7 @@ int main(int argc, char * argv[])
 
   std::shared_ptr<Planner> node = std::make_shared<Planner>("planner");
 
-  move_group_interface = new  MoveGroupInterface(node,"ur_manipulator");
+  // move_group_interface = new  MoveGroupInterface(node,"ur_manipulator");
 
   exe.add_node(node->get_node_base_interface());
 

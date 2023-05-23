@@ -17,12 +17,7 @@
 #include "interfaces/action/solve_puzzle.hpp"
 #include "ur_msgs/srv/set_io.hpp"
 
-#include <moveit/move_group_interface/move_group_interface.h>
-
-  // Create the MoveIt MoveGroup Interface
-using moveit::planning_interface::MoveGroupInterface;
-MoveGroupInterface* move_group_interface;
-
+#include "trac_ik/trac_ik.hpp"
 
 using SolvePuzzle = interfaces::action::SolvePuzzle;
 
@@ -33,6 +28,10 @@ class Planner : public rclcpp::Node {
 
   // Init node
   bool init();
+
+  // Publishers and its corresponding timers
+  std::shared_ptr<rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>>
+      publisher_joints_;
 
   // IdentifyPiece client and its callback
   rclcpp::CallbackGroup::SharedPtr callback_group_client_identify_piece_;
@@ -55,6 +54,7 @@ class Planner : public rclcpp::Node {
   bool requestIdentifyPiece();
   bool requestSetIO(uint8_t pin, uint8_t state);
   bool operateGripper(bool open);
+  bool giveJointGoal(float a, float b, float c, float d, float e, float f);
 
   // Function related to SolvePuzzle action
   rclcpp_action::GoalResponse handleGoal(

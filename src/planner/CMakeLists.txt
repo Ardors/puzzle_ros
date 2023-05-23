@@ -14,6 +14,7 @@ find_package(std_msgs REQUIRED)
 find_package(interfaces REQUIRED)
 find_package(ur_msgs REQUIRED)
 find_package(moveit_ros_planning_interface REQUIRED)
+find_package(trac_ik_lib REQUIRED)
 
 include_directories(
   include
@@ -28,6 +29,7 @@ set(dependencies
   interfaces
   ur_msgs
   moveit_ros_planning_interface
+  trac_ik_lib
 )
 
 add_executable(${PROJECT_NAME} src/planner.cpp)
