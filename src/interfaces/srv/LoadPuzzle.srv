@@ -1,0 +1,12 @@
+#Puzzle faces
+sensor_msgs/Image face0
+sensor_msgs/Image face1
+sensor_msgs/Image face2
+sensor_msgs/Image face3
+sensor_msgs/Image face4
+sensor_msgs/Image face5
+
+# Puzzle grid size
+uint8 m
+uint8 n
+---

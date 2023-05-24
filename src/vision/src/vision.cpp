@@ -38,6 +38,16 @@ Vision::~Vision() {}
         rmw_qos_profile_services_default, callback_group_service_locate_pieces_);
     RCLCPP_INFO(get_logger(), "Service LocatePieces created.");
 
+    // CallbackGroup to run LoadPuzzle service in a separated thread
+    callback_group_service_load_puzzle_ = this->create_callback_group(
+        rclcpp::CallbackGroupType::MutuallyExclusive);
+
+    service_load_puzzle_ = this->create_service<interfaces::srv::LoadPuzzle>("vision/load_puzzle",
+        std::bind(&Vision::loadPuzzleServiceCallback, this,
+        std::placeholders::_1, std::placeholders::_2),
+        rmw_qos_profile_services_default, callback_group_service_load_puzzle_);
+    RCLCPP_INFO(get_logger(), "Service LoadPuzzle created.");
+
     RCLCPP_INFO(get_logger(), "Node initialized.");
 
     return true;
@@ -68,6 +78,14 @@ Vision::~Vision() {}
       temp.piece_y = 0.5;
       temp.piece_w = 1.3;
       response->poses.push_back(temp);
+  }
+
+  void Vision::loadPuzzleServiceCallback(const std::shared_ptr<interfaces::srv::LoadPuzzle::Request> request,
+      std::shared_ptr<interfaces::srv::LoadPuzzle::Response> response){
+      
+      RCLCPP_INFO(get_logger(), "LoadPuzzle service called");
+
+      RCLCPP_INFO(get_logger(), "Puzzle grid size is %d x %d", request->m, request->n);
   }
 
   void Vision::publishImage()

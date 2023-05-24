@@ -15,6 +15,7 @@
 
 #include "interfaces/srv/identify_piece.hpp"
 #include "interfaces/srv/locate_pieces.hpp"
+#include "interfaces/srv/load_puzzle.hpp"
 
 
 class Vision : public rclcpp::Node {
@@ -36,6 +37,9 @@ class Vision : public rclcpp::Node {
   rclcpp::CallbackGroup::SharedPtr callback_group_service_locate_pieces_;
   std::shared_ptr<rclcpp::Service<interfaces::srv::LocatePieces>> service_locate_pieces_;
 
+  rclcpp::CallbackGroup::SharedPtr callback_group_service_load_puzzle_;
+  std::shared_ptr<rclcpp::Service<interfaces::srv::LoadPuzzle>> service_load_puzzle_;
+
  private:
 
   void publishImage();
@@ -45,6 +49,9 @@ class Vision : public rclcpp::Node {
 
   void locatePiecesServiceCallback(const std::shared_ptr<interfaces::srv::LocatePieces::Request> request,
       std::shared_ptr<interfaces::srv::LocatePieces::Response> response);
+
+  void loadPuzzleServiceCallback(const std::shared_ptr<interfaces::srv::LoadPuzzle::Request> request,
+      std::shared_ptr<interfaces::srv::LoadPuzzle::Response> response);
 };
 
 #endif  // VISION_HPP_

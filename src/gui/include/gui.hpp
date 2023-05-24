@@ -13,6 +13,8 @@
 #include "lifecycle_msgs/msg/transition.hpp"
 #include "rclcpp_action/rclcpp_action.hpp"
 
+#include "interfaces/srv/load_puzzle.hpp"
+
 
 class Gui : public rclcpp::Node {
  public:
@@ -26,8 +28,14 @@ class Gui : public rclcpp::Node {
   rclcpp::CallbackGroup::SharedPtr callback_group_subscriber_publish_image_;
   rclcpp::Subscription<sensor_msgs::msg::Image>::SharedPtr subscriber_publish_image_;
 
+  // LoadPuzzle client and its callback
+  rclcpp::CallbackGroup::SharedPtr callback_group_client_load_puzzle_;
+  std::shared_ptr<rclcpp::Client<interfaces::srv::LoadPuzzle>> client_load_puzzle_;
+
  private:
   void printImage(const sensor_msgs::msg::Image::SharedPtr image);
+
+  bool requestLoadPuzzle();
 
 };
 
