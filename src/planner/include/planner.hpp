@@ -16,15 +16,12 @@
 #include "interfaces/srv/locate_pieces.hpp"
 #include "interfaces/action/solve_puzzle.hpp"
 #include "ur_msgs/srv/set_io.hpp"
-
-#include <moveit/move_group_interface/move_group_interface.h>
-
-  // Create the MoveIt MoveGroup Interface
-using moveit::planning_interface::MoveGroupInterface;
-MoveGroupInterface* move_group_interface;
+#include "trajectory_msgs/msg/joint_trajectory.hpp"
+#include "control_msgs/action/follow_joint_trajectory.hpp"
 
 
 using SolvePuzzle = interfaces::action::SolvePuzzle;
+using FollowJointTrajectory = control_msgs::action::FollowJointTrajectory;
 
 class Planner : public rclcpp::Node {
  public:
@@ -33,6 +30,11 @@ class Planner : public rclcpp::Node {
 
   // Init node
   bool init();
+
+  std::shared_ptr<rclcpp_action::Client<FollowJointTrajectory>> action_joint_;
+
+  std::shared_ptr<rclcpp::Publisher<trajectory_msgs::msg::JointTrajectory>>
+      publisher_joints_;
 
   // IdentifyPiece client and its callback
   rclcpp::CallbackGroup::SharedPtr callback_group_client_identify_piece_;
@@ -55,6 +57,7 @@ class Planner : public rclcpp::Node {
   bool requestIdentifyPiece();
   bool requestSetIO(uint8_t pin, uint8_t state);
   bool operateGripper(bool open);
+  bool moveRobot(float angles[6]);
 
   // Function related to SolvePuzzle action
   rclcpp_action::GoalResponse handleGoal(
@@ -67,8 +70,10 @@ class Planner : public rclcpp::Node {
   void executeSolvePuzzle(
     const std::shared_ptr<rclcpp_action::ServerGoalHandle<SolvePuzzle>> goal_handle);
 
-private:
-  std::shared_ptr<rclcpp_lifecycle::LifecyclePublisher<std_msgs::msg::String>> pub_;
 };
+
+  // Definir posiciones
+  float posicion_test_a[] = {-0.9, -1.2, -0.8, 5, 3.4, -2.8};
+  float posicion_test_b[] = {0, 0, 0.8, 5, 3.4, -2.8};
 
 #endif  // PLANNER_HPP_

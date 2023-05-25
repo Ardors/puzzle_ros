@@ -3,8 +3,9 @@
 using namespace std::chrono_literals;
 
 using SolvePuzzle = interfaces::action::SolvePuzzle;
+using FollowJointTrajectory = control_msgs::action::FollowJointTrajectory;
 
-Planner::Planner(const std::string &name) : LifecycleNode(name, "") {
+Planner::Planner(const std::string &name) : Node(name, "") {
     if (name.empty()) {
         throw std::invalid_argument("Empty node name");
     }
@@ -15,6 +16,13 @@ Planner::~Planner() {}
 
   bool Planner::init()
   {
+
+    publisher_joints_ = this->create_publisher<trajectory_msgs::msg::JointTrajectory>
+    ("/joint_trajectory_controller/joint_trajectory", 10);
+
+    action_joint_ = rclcpp_action::create_client<FollowJointTrajectory>
+        (this,"/joint_trajectory_controller/follow_joint_trajectory");
+
     // Create IdentifyVision client callback
     callback_group_client_identify_piece_ = this->create_callback_group(
         rclcpp::CallbackGroupType::MutuallyExclusive);
@@ -170,6 +178,7 @@ Planner::~Planner() {}
 
     auto result = std::make_shared<SolvePuzzle::Result>();
     
+    /*
     if(!requestIdentifyPiece()){
       result->success = false;
       goal_handle->succeed(result);
@@ -185,36 +194,51 @@ Planner::~Planner() {}
     operateGripper(true);
     operateGripper(false);
 
-    // Set a target Pose
-    auto const target_pose = []{
-      geometry_msgs::msg::Pose msg;
-      msg.orientation.w = 1.0;
-      msg.position.x = -0.15;
-      msg.position.y = -0.3;
-      msg.position.z = -0.2;
-      return msg;
-    }();
-    move_group_interface->setPoseTarget(target_pose);
+    */
 
-    // Create a plan to that target pose
-    auto const [success, plan] = [&move_group_interface]{
-      moveit::planning_interface::MoveGroupInterface::Plan msg;
-      auto const ok = static_cast<bool>(move_group_interface->plan(msg));
-      return std::make_pair(ok, msg);
-    }();
+    moveRobot(posicion_test_a);
+    operateGripper(true);
+    moveRobot(posicion_test_b);
 
-    // Execute the plan
-    if(success) {
-      move_group_interface->execute(plan);
-    } else {
-      RCLCPP_ERROR(this->get_logger(), "Planing failed!");
-    }
+    //action_joint_->async_send_goal(goal_msg);
 
     result->success = true;
     goal_handle->succeed(result);
     RCLCPP_INFO(get_logger(), "SolvePuzzle action completed");
     return;
   }
+
+bool Planner::moveRobot(float angles[6]){
+    trajectory_msgs::msg::JointTrajectory pose;
+
+    auto goal_msg = FollowJointTrajectory::Goal();
+
+    // goal_msg.trajectory
+
+    pose.joint_names.push_back("elbow_joint");
+    pose.joint_names.push_back("shoulder_lift_joint");
+    pose.joint_names.push_back("shoulder_pan_joint");
+    pose.joint_names.push_back("wrist_1_joint");
+    pose.joint_names.push_back("wrist_2_joint");
+    pose.joint_names.push_back("wrist_3_joint");
+
+    trajectory_msgs::msg::JointTrajectoryPoint punto;
+
+    punto.positions.push_back(angles[0]);
+    punto.positions.push_back(angles[1]);
+    punto.positions.push_back(angles[2]);
+    punto.positions.push_back(angles[3]);
+    punto.positions.push_back(angles[4]);
+    punto.positions.push_back(angles[5]);
+
+    punto.time_from_start.sec = 4;
+
+    pose.points.push_back(punto);
+
+    publisher_joints_->publish(std::move(pose));
+
+  return true;
+}
 
 /**
  * A lifecycle node has the same node API
@@ -232,12 +256,9 @@ int main(int argc, char * argv[])
 
   rclcpp::executors::MultiThreadedExecutor exe;
 
-  std::shared_ptr<rclcpp_lifecycle::LifecycleNode> lc_node =
-    std::make_shared<Planner>("planner");
-  
-  // std::shared_ptr<rclcpp::Node> aux = lc_node;
+  std::shared_ptr<Planner> node = std::make_shared<Planner>("planner");
 
-  move_group_interface = new  MoveGroupInterface(lc_node,"ur_manipulator");
+  exe.add_node(node->get_node_base_interface());
 
   // Init node
   if (!node->init()) {

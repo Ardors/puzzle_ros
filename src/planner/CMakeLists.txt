@@ -13,7 +13,8 @@ find_package(rclcpp_action REQUIRED)
 find_package(std_msgs REQUIRED)
 find_package(interfaces REQUIRED)
 find_package(ur_msgs REQUIRED)
-find_package(moveit_ros_planning_interface REQUIRED)
+find_package(trajectory_msgs REQUIRED)
+find_package(control_msgs REQUIRED)
 
 include_directories(
   include
@@ -27,7 +28,8 @@ set(dependencies
   std_msgs 
   interfaces
   ur_msgs
-  moveit_ros_planning_interface
+  trajectory_msgs
+  control_msgs
 )
 
 add_executable(${PROJECT_NAME} src/planner.cpp)
@@ -39,6 +41,11 @@ target_compile_features(planner PUBLIC c_std_99 cxx_std_17)  # Require C99 and C
 
 install(TARGETS planner
   DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY
+  launch
+  DESTINATION share/${PROJECT_NAME}/
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
