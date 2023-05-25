@@ -4,11 +4,12 @@ import subprocess
 
 import cv2
 import numpy as np
+from .captura import CaptureImage
 
 def Identification():
 
     # Llamar al programa de Python con argumentos
-    subprocess.run(["python", "captura.py"])
+    CaptureImage()
 
     # Cargar las imágenes
     imagen1 = cv2.imread("PuzzleE.jpeg")
