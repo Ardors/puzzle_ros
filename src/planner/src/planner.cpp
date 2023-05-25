@@ -1,3 +1,5 @@
+#include <chrono>
+
 #include "planner.hpp"
 
 using namespace std::chrono_literals;
@@ -196,9 +198,46 @@ Planner::~Planner() {}
 
     */
 
-    moveRobot(posicion_test_a);
+   std::chrono::milliseconds wait_period(5000);
+   std::chrono::milliseconds wait_gripper(1000);
+
     operateGripper(true);
-    moveRobot(posicion_test_b);
+    rclcpp::sleep_for(wait_gripper);
+
+    moveRobot(posicion_captura);
+    rclcpp::sleep_for(wait_period);
+
+    moveRobot(posicion_soltar_identificacion1);
+    rclcpp::sleep_for(wait_period);
+
+    moveRobot(posicion_soltar_identificacion2);
+    rclcpp::sleep_for(wait_period);
+    
+    operateGripper(false);
+    rclcpp::sleep_for(wait_gripper);
+    operateGripper(true);
+    rclcpp::sleep_for(wait_gripper);
+    operateGripper(false);
+    rclcpp::sleep_for(wait_gripper);
+
+    moveRobot(posicion_soltar_identificacion1);
+    rclcpp::sleep_for(wait_period);
+
+    moveRobot(posicion_ver_identificacion1);
+    rclcpp::sleep_for(wait_period);
+
+    moveRobot(posicion_ver_identificacion2);
+    rclcpp::sleep_for(wait_period);
+
+/*
+    moveRobot(posicion_ver_identificacion1);
+    rclcpp::sleep_for(wait_period);
+
+    moveRobot(posicion_captura);
+    rclcpp::sleep_for(wait_period);
+
+    operateGripper(false);
+    */
 
     //action_joint_->async_send_goal(goal_msg);
 
@@ -224,18 +263,20 @@ bool Planner::moveRobot(float angles[6]){
 
     trajectory_msgs::msg::JointTrajectoryPoint punto;
 
-    punto.positions.push_back(angles[0]);
-    punto.positions.push_back(angles[1]);
-    punto.positions.push_back(angles[2]);
-    punto.positions.push_back(angles[3]);
-    punto.positions.push_back(angles[4]);
-    punto.positions.push_back(angles[5]);
+    punto.positions.push_back(angles[0]*PI/180);
+    punto.positions.push_back(angles[1]*PI/180);
+    punto.positions.push_back(angles[2]*PI/180);
+    punto.positions.push_back(angles[3]*PI/180);
+    punto.positions.push_back(angles[4]*PI/180);
+    punto.positions.push_back(angles[5]*PI/180);
 
     punto.time_from_start.sec = 4;
 
     pose.points.push_back(punto);
 
     publisher_joints_->publish(std::move(pose));
+    
+    
 
   return true;
 }
